@@ -1,4 +1,4 @@
 package figures;
 
-public class Triangle implements Shape {
+public class Triangle extends Shape {
 }

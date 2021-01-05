@@ -1,4 +1,10 @@
 package figures;
 
-public class Rectangle implements Shape {
+import java.awt.*;
+
+public class Rectangle extends Shape {
+    public Rectangle(Boolean isFilled, Color color, Point point, int width, int height){
+        super(point,color,width,height,isFilled);
+        setName("Rectagle");
+    }
 }

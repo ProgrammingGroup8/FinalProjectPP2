@@ -1,4 +1,4 @@
 package figures;
 
-public class Ellipsis implements Shape {
+public class Ellipsis extends Shape {
 }

@@ -5,190 +5,80 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Window extends JFrame implements ActionListener {
+// Java program to create a blank text
+// field of definite number of columns.
+import java.awt.event.*;
+import javax.swing.*;
+    class Window extends JFrame implements ActionListener {
+        // JTextField
+        static JTextField t;
 
-    private JPanel leftPanel;
-    private JPanel centerPanel;
+        // JFrame
+        static JFrame f;
 
-    private JButton button1;
-    private JButton button2;
+        // JButton
+        static JButton b;
 
-    private JTextField edt1;
-    private JTextField edt2;
+        // label to display text
+        static JLabel l;
 
-    private boolean isBtnClicked = false;
-
-    public Window() {
-        init();
-    }
-
-    public Window(String title) {
-        super(title);
-        init();
-    }
-
-    private void init() {
-        initMenuBar();
-        initializeComponents();
-    }
-
-    private void initMenuBar() {
-        JMenuBar menuBar = new JMenuBar();
-
-        JMenu fileMenu = new JMenu("File");
-
-        JMenuItem newItem = new JMenuItem("New");
-//        newItem.addActionListener(this);
-        fileMenu.add(newItem);
-
-        fileMenu.add(new JMenuItem(("Open")));
-        fileMenu.add(new JMenuItem(("Save")));
-        fileMenu.add(new JMenuItem(("Exit")));
-
-        for (int i = 0; i < fileMenu.getItemCount(); i++) {
-            fileMenu.getItem(i).addActionListener(this);
+        // default constructor
+        Window()
+        {
         }
 
-        menuBar.add(fileMenu);
-        this.setJMenuBar(menuBar);
-    }
+        // main class
+        public static void main(String[] args)
+        {
+            // create a new frame to store text field and button
+            f = new JFrame("textfield");
 
-    private void initializeComponents() {
-        Container rootCont = this.getContentPane();
-        rootCont.setBackground(Color.lightGray);
-        rootCont.setLayout(new BorderLayout());
+            // create a label to display text
+            l = new JLabel("nothing entered");
 
-        leftPanel = new JPanel();
-        leftPanel.setBackground(Color.blue);
-        leftPanel.setLayout(new GridBagLayout());
+            // create a new button
+            b = new JButton("gonder");
 
-        button1 = new JButton("Generate");
-        button2 = new JButton("Clear");
+            // create a object of the text class
+            Window te = new Window();
 
-//        button1.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                System.out.println("Button 1 is clicked!");
-//            }
-//        });
-//
-//        button2.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                System.out.println("Button 2 is clicked!");
-//            }
-//        });
-        button1.addActionListener(this);
-        button2.addActionListener(this);
+            // addActionListener to button
+            b.addActionListener(te);
 
-        edt1 = new JTextField("This is a text field");
-        edt2 = new JTextField("Demo");
+            // create a object of JTextField with 16 columns
+            t = new JTextField(16);
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(3, 3, 3, 3);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+            // create a panel to add buttons and textfield
+            JPanel p = new JPanel();
 
-        gbc.gridx = 0;
+            // add buttons and textfield to panel
+            p.add(t);
+            p.add(b);
+            p.add(l);
 
-        gbc.gridy = 0;
-        leftPanel.add(button1, gbc);
+            // add panel to frame
+            f.add(p);
 
-        gbc.gridy = 1;
-        leftPanel.add(button2, gbc);
+            // set the size of frame
+            f.setSize(300, 300);
 
-        gbc.gridy = 2;
-        leftPanel.add(edt1, gbc);
-
-        gbc.gridy = 3;
-        leftPanel.add(edt2, gbc);
-
-        rootCont.add(leftPanel, BorderLayout.WEST);
-
-        centerPanel = new JPanel();
-        centerPanel.setBackground(Color.green);
-        rootCont.add(centerPanel, BorderLayout.CENTER);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-//        System.out.println("A button clicked");
-//        System.out.println(e.getSource());
-
-        if (e.getSource() instanceof JButton) {
-//            System.out.println("A button is clicked");
-
-            switch (e.getActionCommand().trim()) {
-                case "Button":
-                    JOptionPane.showMessageDialog(this,
-                            "Button is clicked!");
-                    break;
-                case "Another Button":
-                    edt1.setText("Another button is click!");
-                    showSomeDrawing();
-                    break;
-            }
-
+            f.show();
         }
 
-        if (e.getSource() instanceof JMenuItem) {
-//            System.out.println("A menu item is clicked");
+        // if the vutton is pressed
+        public void actionPerformed(ActionEvent e)
+        {
+            String s = e.getActionCommand();
+            if (s.equals("gonder")) {
+                // set the text of the label to the text of the field
+                l.setText(t.getText());
+                System.out.println("Bu metni girdiz: "+t.getText());
 
-            JFileChooser fc = new JFileChooser(
-                    "C:\\Users\\ADA-PC\\Documents\\ADA\\2020-21-FALL\\Programming Principles 2\\CSCI1202-10195\\code");
-
-            switch (e.getActionCommand().trim()) {
-                case "New":
-                    break;
-                case "Open":
-                    int res = fc.showOpenDialog(null);
-                    if(res == JFileChooser.APPROVE_OPTION){
-                        System.out.println(fc.getSelectedFile().getAbsolutePath());
-                    }
-                    break;
-                case "Save":
-                    int resSave = fc.showSaveDialog(this);
-
-                    if(resSave == JFileChooser.APPROVE_OPTION){
-                        if(fc.getSelectedFile().exists()){
-                            JOptionPane.showConfirmDialog(this, "File will be cleared! Are you sure?");
-                        }
-//                        System.out.println(fc.getSelectedFile().getAbsolutePath());
-                    }
-                    break;
-                case "Exit":
-                    break;
+                // set the text of field to blank
+                t.setText(" ");
             }
         }
     }
-
-    private void showSomeDrawing(){
-        isBtnClicked = true;
-
-        repaint();
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-
-        g.drawPolygon(new int[]{300,600,500}, new int[]{400,200,500}, 3);
-
-        if(isBtnClicked){
-            Graphics gr = centerPanel.getGraphics();
-
-            gr.drawRect(50,50,50,50);
-            gr.setColor(Color.GREEN);
-
-//            gr.setColor(Color.white);
-//            gr.drawRect(100, 50, 200,200);
-//
-//            gr.setColor(new Color(255, 50, 50));
-//            gr.fillOval(20, 100, 50,50);
-        }
-    }
-
-
-}
 
 
 
