@@ -10,6 +10,18 @@ public abstract class Shape {
     int height;
     boolean isFilled;
 
+    @Override
+    public String toString() {
+        return "Shape{" +
+                "name='" + name + '\'' +
+                ", p=" + p +
+                ", color=" + color +
+                ", width=" + width +
+                ", height=" + height +
+                ", isFilled=" + isFilled +
+                '}';
+    }
+
     public Shape(){
 
     }

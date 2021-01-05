@@ -13,7 +13,7 @@ public enum Figure {
     private static final int SIZE = VALUES.size();
     private static final Random RANDOM = new Random();
 
-    public static Figure randomLetter()  {
+    public static Figure randomFigure()  {
         return VALUES.get(RANDOM.nextInt(SIZE));
     }
 
