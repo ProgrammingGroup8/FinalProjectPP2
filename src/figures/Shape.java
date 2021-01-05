@@ -38,4 +38,23 @@ public abstract class Shape {
         this.name = name;
     }
 
+    public Point getP() {
+        return p;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public boolean isFilled() {
+        return isFilled;
+    }
 }
