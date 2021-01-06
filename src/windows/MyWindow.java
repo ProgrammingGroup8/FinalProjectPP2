@@ -105,6 +105,7 @@ public class MyWindow extends JFrame implements ActionListener {
 
 
         edt1 = new JTextField("0", 10);
+        System.out.println("Metn budur "+edt1.getText());
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(3, 3, 3, 3);
@@ -134,27 +135,20 @@ public class MyWindow extends JFrame implements ActionListener {
         rightPanel.setBackground(Color.white);
         rootCont.add(rightPanel, BorderLayout.CENTER);
 
-        //       rootCont.add();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        //  System.out.println("A button");
-
         if (e.getSource() instanceof JButton) {
-            // System.out.println("A button is clicked");
             switch (e.getActionCommand().trim()) {
                 case "Generate":
-
-                    JOptionPane.showMessageDialog(this, "Button is clicked");
-                    ShowSomeDrawing();
+                    ShowSomeDrawing(edt1.getText());
                     break;
                 case "Clear":
+                    rightPanel.removeAll();
+                    repaint();
 
                     break;
-            }
-            if (e.getActionCommand().trim().equals("Clear")) {
-                JOptionPane.showMessageDialog(this, "Button is clicked");
             }
         }
 
@@ -192,12 +186,12 @@ public class MyWindow extends JFrame implements ActionListener {
         }
     }
 
-    private void ShowSomeDrawing() {
+    private void ShowSomeDrawing(String number) {
 
         Generator generator = new Generator();
-        List<Shape> shapes = generator.generateFigures(15);
+        List<Shape> shapes = generator.generateFigures(Integer.parseInt(number));
         Graphics gr = rightPanel.getGraphics();
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < Integer.parseInt(number); i++) {
             gr.setColor(shapes.get(i).getColor());
             gr.drawRect(shapes.get(i).getP().getX(), shapes.get(i).getP().getY(), shapes.get(i).getWidth(), shapes.get(i).getHeight());
             if (shapes.get(i).isFilled()){
@@ -210,12 +204,6 @@ public class MyWindow extends JFrame implements ActionListener {
     private void clearScreen(){
 
     }
-
-//   @Override
-//   public void paint(Graphics g) {
-//        super.paint(g);
-//        g.drawPolygon(new int[] {300,600,500}, new int[]{400, 200, 500}, 3 );
-//    }
 }
 
 
