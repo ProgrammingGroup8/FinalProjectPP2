@@ -44,6 +44,7 @@ public class Generator extends JFrame {
         return new Color(r, g, b);
     }
 
+
     public Point randomPoint() {
         return new figures.Point((int) (Math.random() * 500), (int) (Math.random() * 500));
 

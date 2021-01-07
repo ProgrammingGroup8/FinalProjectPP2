@@ -9,7 +9,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.font.TextHitInfo;
 import java.util.List;
 
 public class MyWindow extends JFrame implements ActionListener {
@@ -142,7 +141,7 @@ public class MyWindow extends JFrame implements ActionListener {
         if (e.getSource() instanceof JButton) {
             switch (e.getActionCommand().trim()) {
                 case "Generate":
-                    ShowSomeDrawing(edt1.getText());
+                    drawRandomFigures(edt1.getText());
                     break;
                 case "Clear":
                     rightPanel.removeAll();
@@ -186,19 +185,37 @@ public class MyWindow extends JFrame implements ActionListener {
         }
     }
 
-    private void ShowSomeDrawing(String number) {
+    private void drawRandomFigures(String number) {
 
         Generator generator = new Generator();
         List<Shape> shapes = generator.generateFigures(Integer.parseInt(number));
         Graphics gr = rightPanel.getGraphics();
-        for (int i = 0; i < Integer.parseInt(number); i++) {
-            gr.setColor(shapes.get(i).getColor());
-            gr.drawRect(shapes.get(i).getP().getX(), shapes.get(i).getP().getY(), shapes.get(i).getWidth(), shapes.get(i).getHeight());
-            if (shapes.get(i).isFilled()){
-                gr.fillRect(shapes.get(i).getP().getX(), shapes.get(i).getP().getY(), shapes.get(i).getWidth(), shapes.get(i).getHeight());
+        for (Shape shape : shapes){
+            if (shape.getName().equals("rectangle")){
+                gr.setColor(Color.RED);
+                gr.setColor(shape.getColor());
+                gr.drawRect(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
+                if (shape.isFilled()){
+                    gr.fillRect(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
+                }
+            }
+            if (shape.getName().equals("circle")){
+                gr.setColor(shape.getColor());
+                gr.drawOval(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
+                if (shape.isFilled()){
+                    gr.fillOval(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
+                }
             }
 
+            if (shape.getName().equals("triangle")){
+               DrawTriangle dt = new DrawTriangle(shape.getColor(),shape.getP().getX(),shape.getP().getY());
+                dt.setLocation(new Point(40,20));
+                   // dt.setLocation(shape.getP().getX(),shape.getP().getY());
+                 dt.paint(gr);
+                dt.setVisible(true);
+            }
         }
+
 
     }
     private void clearScreen(){

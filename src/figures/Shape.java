@@ -50,6 +50,10 @@ public abstract class Shape {
         return width;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public int getHeight() {
         return height;
     }
