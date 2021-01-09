@@ -12,7 +12,6 @@ public class app {
     public static void main(String[] args) {
         Generator gn = new Generator();
         gn.generateFigures(10).forEach(System.out::println);
-        System.out.println("end");
 
         MyWindow window = new MyWindow("Drawer");
         //window.setTitle("Another one");

@@ -1,7 +1,6 @@
 package windows;
 
 
-
 import figures.Shape;
 import service.Generator;
 
@@ -15,9 +14,11 @@ public class MyWindow extends JFrame implements ActionListener {
 
     private JPanel leftPanel;
     private JPanel rightPanel;
-
-    private JButton button1;
-    private JButton button2;
+    private Boolean isGenerateClicked = false;
+    private Boolean isClearClicked = false;
+    private int numberOfFigures = 0;
+    private JButton generateButton;
+    private JButton clearButton;
     private JButton btCountUp;
     private JButton btCountDown;
     private JTextField edt1;
@@ -76,13 +77,13 @@ public class MyWindow extends JFrame implements ActionListener {
         leftPanel.setBackground(Color.green);
         leftPanel.setLayout(new GridBagLayout());
 
-        button1 = new JButton("Generate");
-        button2 = new JButton("Clear");
+        generateButton = new JButton("Generate");
+        clearButton = new JButton("Clear");
         btCountUp = new JButton("+");
         btCountDown = new JButton("-");
 
-        button1.addActionListener(this);
-        button2.addActionListener(this);
+        generateButton.addActionListener(this);
+        clearButton.addActionListener(this);
 
         btCountUp.addActionListener(new ActionListener() {
             @Override
@@ -104,7 +105,7 @@ public class MyWindow extends JFrame implements ActionListener {
 
 
         edt1 = new JTextField("0", 10);
-        System.out.println("Metn budur "+edt1.getText());
+        System.out.println("Metn budur " + edt1.getText());
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(3, 3, 3, 3);
@@ -113,10 +114,10 @@ public class MyWindow extends JFrame implements ActionListener {
         gbc.gridx = 0;
 
         gbc.gridy = 0;
-        leftPanel.add(button1, gbc);
+        leftPanel.add(generateButton, gbc);
 
         gbc.gridy = 1;
-        leftPanel.add(button2, gbc);
+        leftPanel.add(clearButton, gbc);
 
         gbc.gridy = 2;
         leftPanel.add(edt1, gbc);
@@ -144,9 +145,8 @@ public class MyWindow extends JFrame implements ActionListener {
                     drawRandomFigures(edt1.getText());
                     break;
                 case "Clear":
-                    rightPanel.removeAll();
+                    isClearClicked = true;
                     repaint();
-
                     break;
             }
         }
@@ -186,40 +186,46 @@ public class MyWindow extends JFrame implements ActionListener {
     }
 
     private void drawRandomFigures(String number) {
-
-        Generator generator = new Generator();
-        List<Shape> shapes = generator.generateFigures(Integer.parseInt(number));
-        Graphics gr = rightPanel.getGraphics();
-        for (Shape shape : shapes){
-            if (shape.getName().equals("rectangle")){
-                gr.setColor(Color.RED);
-                gr.setColor(shape.getColor());
-                gr.drawRect(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
-                if (shape.isFilled()){
-                    gr.fillRect(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
-                }
-            }
-            if (shape.getName().equals("circle")){
-                gr.setColor(shape.getColor());
-                gr.drawOval(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
-                if (shape.isFilled()){
-                    gr.fillOval(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
-                }
-            }
-
-            if (shape.getName().equals("triangle")){
-               DrawTriangle dt = new DrawTriangle(shape.getColor(),shape.getP().getX(),shape.getP().getY());
-                dt.setLocation(new Point(40,20));
-                   // dt.setLocation(shape.getP().getX(),shape.getP().getY());
-                 dt.paint(gr);
-                dt.setVisible(true);
-            }
-        }
-
+        isGenerateClicked = true;
+        isClearClicked = false;
+        numberOfFigures = Integer.parseInt(number);
+        repaint();
 
     }
-    private void clearScreen(){
 
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        if (isGenerateClicked && isClearClicked == false) {
+            Generator generator = new Generator();
+            List<Shape> shapes = generator.generateFigures(numberOfFigures);
+            Graphics gr = rightPanel.getGraphics();
+            for (Shape shape : shapes) {
+                if (shape.getName().equals("rectangle")) {
+                    gr.setColor(Color.RED);
+                    gr.setColor(shape.getColor());
+                    gr.drawRect(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
+                    if (shape.isFilled()) {
+                        gr.fillRect(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
+                    }
+                }
+                if (shape.getName().equals("circle")) {
+                    gr.setColor(shape.getColor());
+                    gr.drawOval(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
+                    if (shape.isFilled()) {
+                        gr.fillOval(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
+                    }
+                }
+
+                if (shape.getName().equals("triangle")) {
+                    DrawTriangle dt = new DrawTriangle(shape.getColor(), shape.getP().getX(), shape.getP().getY());
+                    // dt.setLocation(shape.getP().getX(),shape.getP().getY());
+                    dt.paint(gr);
+                    dt.setVisible(true);
+                }
+            }
+
+        }
     }
 }
 

@@ -18,10 +18,7 @@ public class DrawRect extends JPanel {
             repaint();
         }
 
-        public void mouseReleased(MouseEvent e) {
-            setEndPoint(e.getX(), e.getY());
-            repaint();
-        }
+
     }
 
     int x, y, x2, y2;
