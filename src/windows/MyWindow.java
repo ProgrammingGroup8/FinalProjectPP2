@@ -2,9 +2,8 @@ package windows;
 
 
 import figures.Shape;
-import file.FileRead;
-import file.FileWrite;
-import service.Generator;
+import service.GeneratorService;
+import service.ShapeService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +24,7 @@ public class MyWindow extends JFrame implements ActionListener {
     private Boolean isOpenClicked = false;
     private int numberOfFigures = 0;
     private  List<Shape> toBeSaved=null;
+    private List<Shape> shapes = new ArrayList<>();
     private JButton generateButton;
     private JButton clearButton;
     private JButton btCountUp;
@@ -55,12 +55,10 @@ public class MyWindow extends JFrame implements ActionListener {
         JMenu m1 = new JMenu("FILE");
 
         mb.add(m1);
-        JMenuItem comp1 = new JMenuItem("New");
 
         JMenuItem comp2 = new JMenuItem("Open");
         JMenuItem comp3 = new JMenuItem("Save as");
         JMenuItem comp4 = new JMenuItem("Exit");
-        m1.add(comp1);
         m1.add(comp2);
         m1.add(comp3);
         m1.add(comp4);
@@ -70,11 +68,6 @@ public class MyWindow extends JFrame implements ActionListener {
         }
 
         this.setJMenuBar(mb);
-
-/*      JMenuBar menuBar = new JMenuBar();
-        JMenu fileMenu = new JMenu("File");
-        menuBar.add(fileMenu);
-        this.setJMenuBar(menuBar);*/
     }
 
     private void initializeComponents() {
@@ -113,7 +106,6 @@ public class MyWindow extends JFrame implements ActionListener {
 
 
         edt1 = new JTextField("0", 10);
-        System.out.println("Metn budur " + edt1.getText());
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(3, 3, 3, 3);
@@ -150,7 +142,19 @@ public class MyWindow extends JFrame implements ActionListener {
         if (e.getSource() instanceof JButton) {
             switch (e.getActionCommand().trim()) {
                 case "Generate":
-                    drawRandomFigures(edt1.getText());
+                    if (!shapes.isEmpty()){
+                        int reply = JOptionPane.showConfirmDialog(this, "Current figures will be removed. Are you sure?", "Be Careful!", JOptionPane.YES_NO_OPTION);
+                            if (reply == JOptionPane.YES_OPTION){
+                                drawRandomFigures(edt1.getText());
+                            }
+
+                    }else {
+                        drawRandomFigures(edt1.getText());
+                    }
+
+
+
+
                     break;
                 case "Clear":
                     isClearClicked = true;
@@ -160,15 +164,10 @@ public class MyWindow extends JFrame implements ActionListener {
         }
 
         if (e.getSource() instanceof JMenuItem) {
-            System.out.println("A menu is clicked");
-            JFileChooser fc = new JFileChooser("C:\\Users\\sadig\\Desktop\\2020 FALL\\PP2");
+            JFileChooser fc = new JFileChooser();
 
             switch (e.getActionCommand().trim()) {
-                case "New":
-                    break;
                 case "Open":
-                    //    JFileChooser fc = new JFileChooser("C:\\Users\\sadig\\Desktop\\2020 FALL\\PP2");
-
                     int res = fc.showOpenDialog(this);
                     if (res == JFileChooser.APPROVE_OPTION) {
                         isOpenClicked = true;
@@ -177,7 +176,6 @@ public class MyWindow extends JFrame implements ActionListener {
                         path = fc.getSelectedFile().getPath();
                         paint(getGraphics());
 
-                        // System.out.println(fc.getSelectedFile().getAbsolutePath());
                     }
                     break;
                 case "Save as":
@@ -186,20 +184,25 @@ public class MyWindow extends JFrame implements ActionListener {
                         if (fc.getSelectedFile().exists()) {
                             JOptionPane.showMessageDialog(this, "It is already existed, do you want to save it?");
                         }
-                        FileWrite saver = new FileWrite();
                         try {
-                            saver.write(fc.getSelectedFile().getAbsolutePath(),toBeSaved);
+                            ShapeService.saveShapes(fc.getSelectedFile().getAbsolutePath(),toBeSaved);
                             path = fc.getSelectedFile().getAbsolutePath();
                         } catch (IOException ioException) {
                             ioException.printStackTrace();
                         }
-                        System.out.println(fc.getSelectedFile().getAbsolutePath());
                     }
                     break;
                 case "Exit":
+                    if (!shapes.isEmpty()){
+                        int reply = JOptionPane.showConfirmDialog(this, "Current figures will not be saved. Are you sure?", "Be Careful!", JOptionPane.YES_NO_OPTION);
+                        if (reply == JOptionPane.YES_OPTION){
+                            System.exit(0);
+                        }
 
-                    //this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                    System.exit(0);
+                    }else {
+                        System.exit(0);
+                    }
+
                     break;
 
             }
@@ -210,8 +213,10 @@ public class MyWindow extends JFrame implements ActionListener {
         isGenerateClicked = true;
         isClearClicked = false;
         isOpenClicked = false;
+
         numberOfFigures = Integer.parseInt(number);
         repaint();
+
 
     }
 
@@ -220,17 +225,15 @@ public class MyWindow extends JFrame implements ActionListener {
     public void paint(Graphics g) {
         super.paint(g);
         if (!isClearClicked) {
-            List<Shape> shapes = new ArrayList<>();
-            Generator generator = new Generator();
+            GeneratorService generatorService = new GeneratorService();
             if (isGenerateClicked) {
-                shapes = generator.generateFigures(numberOfFigures);
+                shapes = generatorService.generateFigures(numberOfFigures);
                 toBeSaved = shapes;
                 //FileRead.reading(new File("src/shapes_50.txt"));
                 //generator.generateFigures(numberOfFigures);
             } else if (isOpenClicked) {
-                shapes = FileRead.reading(new File(path));
+                shapes = ShapeService.readShapes(new File(path));
             }
-
             Graphics gr = rightPanel.getGraphics();
             for (Shape shape : shapes) {
                 if (shape.getName().equals("rectangle")) {

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Generator extends JFrame {
+public class GeneratorService extends JFrame {
 
     public List<Shape> generateFigures(int number) {
         List<Shape> figureList = new ArrayList<>();
