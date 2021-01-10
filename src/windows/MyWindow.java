@@ -2,21 +2,29 @@ package windows;
 
 
 import figures.Shape;
+import file.FileRead;
+import file.FileWrite;
 import service.Generator;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MyWindow extends JFrame implements ActionListener {
 
     private JPanel leftPanel;
     private JPanel rightPanel;
+    private String path;
     private Boolean isGenerateClicked = false;
     private Boolean isClearClicked = false;
+    private Boolean isOpenClicked = false;
     private int numberOfFigures = 0;
+    private  List<Shape> toBeSaved=null;
     private JButton generateButton;
     private JButton clearButton;
     private JButton btCountUp;
@@ -163,7 +171,13 @@ public class MyWindow extends JFrame implements ActionListener {
 
                     int res = fc.showOpenDialog(this);
                     if (res == JFileChooser.APPROVE_OPTION) {
-                        System.out.println(fc.getSelectedFile().getAbsolutePath());
+                        isOpenClicked = true;
+                        isClearClicked = false;
+                        isGenerateClicked = false;
+                        path = fc.getSelectedFile().getPath();
+                        paint(getGraphics());
+
+                        // System.out.println(fc.getSelectedFile().getAbsolutePath());
                     }
                     break;
                 case "Save as":
@@ -171,6 +185,13 @@ public class MyWindow extends JFrame implements ActionListener {
                     if (save == JFileChooser.APPROVE_OPTION) {
                         if (fc.getSelectedFile().exists()) {
                             JOptionPane.showMessageDialog(this, "It is already existed, do you want to save it?");
+                        }
+                        FileWrite saver = new FileWrite();
+                        try {
+                            saver.write(fc.getSelectedFile().getAbsolutePath(),toBeSaved);
+                            path = fc.getSelectedFile().getAbsolutePath();
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
                         }
                         System.out.println(fc.getSelectedFile().getAbsolutePath());
                     }
@@ -188,17 +209,28 @@ public class MyWindow extends JFrame implements ActionListener {
     private void drawRandomFigures(String number) {
         isGenerateClicked = true;
         isClearClicked = false;
+        isOpenClicked = false;
         numberOfFigures = Integer.parseInt(number);
         repaint();
 
     }
 
+
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        if (isGenerateClicked && isClearClicked == false) {
+        if (!isClearClicked) {
+            List<Shape> shapes = new ArrayList<>();
             Generator generator = new Generator();
-            List<Shape> shapes = generator.generateFigures(numberOfFigures);
+            if (isGenerateClicked) {
+                shapes = generator.generateFigures(numberOfFigures);
+                toBeSaved = shapes;
+                //FileRead.reading(new File("src/shapes_50.txt"));
+                //generator.generateFigures(numberOfFigures);
+            } else if (isOpenClicked) {
+                shapes = FileRead.reading(new File(path));
+            }
+
             Graphics gr = rightPanel.getGraphics();
             for (Shape shape : shapes) {
                 if (shape.getName().equals("rectangle")) {

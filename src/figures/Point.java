@@ -1,8 +1,8 @@
 package figures;
 
 public class Point {
-    int x = 50;
-    int y = 70;
+    int x ;
+    int y;
 
     public Point(int x, int y) {
         this.x = x;
